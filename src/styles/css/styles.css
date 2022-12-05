@@ -1,0 +1,23 @@
+.container {
+  background: "#f0f2f5";
+  height: "100vh";
+}
+
+.logo {
+  cursor: pointer;
+  margin: 10px;
+}
+
+.ilustracao {
+  height: 80vh;
+}
+
+.gridForm {
+  display: flex;
+  justify-content: center;
+}
+
+.form {
+  padding-top: 30px;
+  margin-top: 30px;
+}
