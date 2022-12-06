@@ -3,9 +3,9 @@ import LayoutForm from "../components/LayoutForm";
 import { useState } from "react";
 
 const initialPage = {
-  route: "registrar",
-  namePage: "Registrar",
-  routeOtherPage: "entrar",
+  route: "register",
+  namePage: "register",
+  routeOtherPage: "login",
   nameOtherPage: "Entrar",
 };
 

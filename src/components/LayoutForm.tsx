@@ -3,25 +3,24 @@ import {
   Button,
   Paper,
   Typography,
-  TextField,
-  Select,
-  MenuItem,
+  TextField
 } from "@mui/material";
 import "./../styles/css/styles.css";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import api from "../Service/api";
 
 const values = {
-  nome: "",
+  name: "M",
   email: "",
-  senha: "",
+  password: "",
 };
 
 export default function LayoutForm({ page }: { page: any }) {
   const navigate = useNavigate();
   const formik = useFormik({
-    initialValues: values,  
+    initialValues: values,
     onSubmit: (event) => {
       handleSubmit();
     },
@@ -29,32 +28,36 @@ export default function LayoutForm({ page }: { page: any }) {
 
   function handleSubmit() {
     //Validar informações
-    if (!formik.values.nome || !formik.values.senha) {
-      toast.error("O nome de usuário ou senha não podem ser vazios");
+    if (!formik.values.email || !formik.values.password) {
+      toast.error("O nome de usuário ou password não podem ser vazios");
       return;
     }
 
     //Envia as informações
     const params = {
-      nome: formik.values?.nome,
+      name: formik.values?.name,
       email: formik.values?.email,
-      senha: formik.values?.senha,
+      password: formik.values?.password,
     };
-    console.log('params', params)
-
-    // if (params.nome === user?.nome && params.senha === user?.senha) {
-    //   toast.success("Bem vindo!");
-    //   navigate("/home");
-    // }
 
     // Exemplo utilizando o axios
-    // api
-    //   .post("/rota", params)
-    //   .then((response) => {})
-    //   .catch((error) => {
-    //     toast.error("Erro ao enviar dados");
-    //     console.log(error);
-    //   });
+    const route = page.namePage === "Entrar" ? "/login" : "/register"
+    api
+      .post(route, params)
+      .then((response) => {
+        if (page.namePage === "Entrar") {
+          localStorage.setItem('token', response.data.data)
+          navigate('/home');
+        }
+        else {
+          toast.success("Usuário cadastrado com sucesso")
+          navigate('/login');
+        }
+      })
+      .catch((error) => {
+        toast.error("Erro ao enviar dados");
+        console.log(error);
+      });
   }
 
   return (
@@ -92,7 +95,7 @@ export default function LayoutForm({ page }: { page: any }) {
             elevation={3}
             style={{
               width: "400px",
-              height: page?.route === "entrar" ? "420px" : "500px",
+              height: page?.route === "login" ? "420px" : "500px",
               background: "#ffffff",
               textAlign: "center",
               boxShadow: "4px 1px 16px 0px rgba(0,0,0,0.49)",
@@ -105,37 +108,36 @@ export default function LayoutForm({ page }: { page: any }) {
                 <Typography>{page?.namePage}</Typography>
 
                 <TextField
-                  label="Nome"
-                  name="nome"
-                  value={formik.values?.nome}
+                  label="E-mail"
+                  name="email"
+                  value={formik.values.email}
                   onChange={formik.handleChange}
                   variant="outlined"
                   type="text"
-                  placeholder="Nome"
+                  placeholder="E-mail"
                   style={{ marginTop: "30px" }}
                 />
 
-                {page?.route === "registrar" ? (
+                {page?.route === "register" ? (
                   <>
                     <TextField
-                      label="E-mail"
-                      name="email"
-                      value={formik.values.email}
+                      label="Nome"
+                      name="name"
+                      value={formik.values?.name}
                       onChange={formik.handleChange}
                       variant="outlined"
                       type="text"
-                      placeholder="E-mail"
+                      placeholder="Nome"
                       style={{ marginTop: "30px" }}
                     />
-
                   </>
                 ) : <></>}
 
 
                 <TextField
                   label="Senha"
-                  name="senha"
-                  value={formik.values.senha}
+                  name="password"
+                  value={formik.values.password}
                   onChange={formik.handleChange}
                   variant="outlined"
                   type="password"
